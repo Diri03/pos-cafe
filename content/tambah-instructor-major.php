@@ -14,14 +14,14 @@ $rowMajors = mysqli_fetch_all($queryMajors, MYSQLI_ASSOC);
 $queryInstructors = mysqli_query($config,"SELECT * FROM instructors WHERE id='$id'");
 $rowInstructors = mysqli_fetch_assoc($queryInstructors);
 
-$queryInstructorsMajor = mysqli_query($config,"SELECT instructor_majors.id, majors.name FROM instructor_majors LEFT JOIN majors ON majors.id = instructor_majors.id_major WHERE id_instructor='$id' ORDER BY instructor_majors.id DESC");
+$queryInstructorsMajor = mysqli_query($config,"SELECT instructor_majors.id, majors.name, id_instructor FROM instructor_majors LEFT JOIN majors ON majors.id = instructor_majors.id_major WHERE id_instructor='$id' ORDER BY instructor_majors.id DESC");
 $rowInstructorsMajor = mysqli_fetch_all($queryInstructorsMajor, MYSQLI_ASSOC);
 
 if (isset($_GET['delete'])) {  
     $id= $_GET['delete'];
-    $id_instructor = $_GET['id'];
+    $id_instructor = $_GET['id_instructor'];
 
-    $queryDelete = mysqli_query($config,"DELETE FROM instructor_majors WHERE id = '$id_user'");
+    $queryDelete = mysqli_query($config,"DELETE FROM instructor_majors WHERE id = '$id'");
     if ($queryDelete) {
         header("location:?page=tambah-instructor-major&id=" . $id_instructor . "&hapus=berhasil");
     } else {
@@ -50,16 +50,16 @@ if (isset($_GET['delete'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($rowInstructorsMajor as $key => $data) { ?>
+                        <?php foreach ($rowInstructorsMajor as $key => $data) : ?>
                             <tr>
                                 <td><?php echo $key + 1 ?></td>
                                 <td><?php echo $data['name']; ?></td>
                                 <td>
                                     
-                                    <a onclick="return confirm('Are you sure?')" href="?page=tambah-instructor-major&delete=<?php echo $data['id'] ?>" class="btn btn-danger">Delete</a>
+                                    <a onclick="return confirm('Are you sure?')" href="?page=tambah-instructor-major&delete=<?php echo $data['id'] ?> &id_instructor=<?php echo $data['id_instructor'] ?>" class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>
-                        <?php } ?>
+                        <?php endforeach ?>
                     </tbody>
                 </table>
             </div>
