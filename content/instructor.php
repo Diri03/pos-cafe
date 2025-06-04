@@ -36,9 +36,9 @@
                                     <td><?php echo $data['email']; ?></td>
                                     <td><?php echo $data['address']; ?></td>
                                     <td>
-                                        <a href="?page=tambah-instructor-major&id=<?php echo $data['id']; ?>" class="btn btn-warning">Add Major</a>
-                                        <a href="?page=tambah-instructor&edit=<?php echo $data['id']; ?>" class="btn btn-success">Edit</a>
-                                        <a onclick="return confirm('Are you sure?')" href="?page=tambah-instructor&delete=<?php echo $data['id'] ?>" class="btn btn-danger">Delete</a>
+                                        <a href="?page=tambah-instructor-major&id_instructor=<?php echo $data['id']; ?>" class="btn btn-warning btn-sm">Add Major</a>
+                                        <a href="?page=tambah-instructor&edit=<?php echo $data['id']; ?>" class="btn btn-success btn-sm">Edit</a>
+                                        <a onclick="return confirm('Are you sure?')" href="?page=tambah-instructor&delete=<?php echo $data['id'] ?>" class="btn btn-danger btn-sm">Delete</a>
                                     </td>
                                 </tr>
                             <?php } ?>
