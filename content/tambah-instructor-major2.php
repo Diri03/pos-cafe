@@ -35,6 +35,11 @@ if (isset($_GET['delete'])) {
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body">
+                <!-- start form edit -->
+                
+                <!-- end form edit -->
+
+                <!-- listing Table -->
                 <h5 class="card-title">Edit Insturctor Major : <?php echo $rowInstructors['name']; ?></h5>
                 <div align="right">
                     <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -55,7 +60,7 @@ if (isset($_GET['delete'])) {
                                 <td><?php echo $key + 1 ?></td>
                                 <td><?php echo $data['name']; ?></td>
                                 <td>
-                                    
+                                    <a href="?page=tambah-instructor-major&id=<?php echo $data['id_instructor'] ?>&edit=<?php echo $data['id']; ?>" class="btn btn-success">Edit</a>
                                     <a onclick="return confirm('Are you sure?')" href="?page=tambah-instructor-major&delete=<?php echo $data['id'] ?> &id_instructor=<?php echo $data['id_instructor'] ?>" class="btn btn-danger">Delete</a>
                                 </td>
                             </tr>

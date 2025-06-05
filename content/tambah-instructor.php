@@ -18,9 +18,10 @@ if (!isset($_GET['edit'])) {
         $education = $_POST['education'];
         $phone = $_POST['phone'];
         $email = $_POST['email'];
+        $password = sha1($_POST['password']);
         $address = $_POST['address'];
         $id_user = isset($_GET['edit']) ? $_GET['edit'] : '';
-        $insert = mysqli_query($config,"INSERT INTO instructors (name, gender, education, phone, email, address) VALUES ('$name', '$gender', '$education', '$phone', '$email', '$address')");
+        $insert = mysqli_query($config,"INSERT INTO instructors (name, gender, education, phone, email, password, address) VALUES ('$name', '$gender', '$education', '$phone', '$email', '$password', '$address')");
         header("location:?page=instructor&tambah=berhasil");
     } 
     
@@ -34,9 +35,14 @@ if (!isset($_GET['edit'])) {
         $education = $_POST['education'];
         $phone = $_POST['phone'];
         $email = $_POST['email'];
+        if (empty($_POST['password'])) {
+            $password = $row['password'];
+        } else {
+            $password = sha1($_POST['password']);
+        }
         $address = $_POST['address'];
         $id_user = isset($_GET['edit']) ? $_GET['edit'] : '';
-        $update = mysqli_query($config,"UPDATE instructors SET name='$name', gender='$gender', education='$education', phone='$phone', email='$email', address='$address' WHERE id='$id_user'");
+        $update = mysqli_query($config,"UPDATE instructors SET name='$name', gender='$gender', education='$education', phone='$phone', email='$email', password='$password', address='$address' WHERE id='$id_user'");
         header("location:?page=instructor&ubah=berhasil");
     } 
 }
@@ -73,6 +79,14 @@ if (!isset($_GET['edit'])) {
                     <div class="mb-3">
                         <label for="" class="form-label"> Email <span class="text-danger">*</span></label>
                         <input required type="email" name="email" placeholder="Enter your email" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['email'] : ''; ?>">
+                    </div>
+                    <div class="mb-3">
+                        <label for="" class="form-label"> Password <span class="text-danger"><?php echo isset($_GET['edit']) ? '' : '*'; ?></span></label>
+                        <input <?php echo isset($_GET['edit']) ? '' : 'selected'; ?> type="password" name="password" placeholder="Enter your password" class="form-control">
+                        <?php echo isset( $_GET['edit']) ? 
+                        "<small>
+                            )* If you want to change your password, you can fill this field
+                        </small>" : ''; ?>
                     </div>
                     <div class="mb-3">
                         <label for="" class="form-label"> Address <span class="text-danger">*</span></label>
