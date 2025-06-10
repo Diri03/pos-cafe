@@ -9,6 +9,8 @@
 
         if ($role == 1) {
           $queryLogin = mysqli_query($config,"SELECT * FROM instructors WHERE email='$email' AND password='$password'");
+        } elseif ($role == 2) {
+          $queryLogin = mysqli_query($config,"SELECT * FROM students WHERE email='$email' AND password='$password'");
         } else {
           $queryLogin = mysqli_query($config,"SELECT * FROM users WHERE email='$email' AND password='$password'");
         }
@@ -17,6 +19,7 @@
             $rowLogin = mysqli_fetch_assoc($queryLogin);
             $_SESSION['ID_USER'] = $rowLogin['id'];
             $_SESSION['NAME'] = $rowLogin['name'];
+            $_SESSION['ID_ROLE'] = $role;
 
             header('location:home.php');
         } else {
