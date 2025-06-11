@@ -82,31 +82,6 @@ if (isset($_GET['download'])) {
         exit;
     }
 }
-// if (isset($_GET['download'])) {
-//     $download = basename($_GET['download']); // Hindari path traversal
-//     $filePath = "uploads/" . $download;
-
-//     if (file_exists($filePath)) {
-//         // Bersihkan buffer output
-//         if (ob_get_level()) {
-//             ob_end_clean();
-//         }
-
-//         header("Content-Description: File Transfer");
-//         header("Content-Type: application/octet-stream");
-//         header("Content-Disposition: attachment; filename=\"" . basename($filePath) . "\"");
-//         header("Expires: 0");
-//         header("Cache-Control: must-revalidate");
-//         header("Pragma: public");
-//         header("Content-Length: " . filesize($filePath));
-
-//         flush(); // Pastikan semua header dikirim
-//         readfile($filePath);
-//         exit;
-//     } else {
-//         echo "File tidak ditemukan.";
-//     }
-// }
 
 ?>
 
@@ -186,7 +161,9 @@ if (isset($_GET['download'])) {
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody></tbody>
+                            <tbody>
+                                
+                            </tbody>
                         </table>
                         
                         <div class="mb-3">
@@ -202,16 +179,15 @@ if (isset($_GET['download'])) {
 <script>
     const button = document.querySelector('#addRow');
     const tbody = document.querySelector('#myTable tbody');
-    // button.textContent = "Duarr";
-    // button.style.color = "red";
 
     button.addEventListener("click", function(){
-        // alert('Duarrr');
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
-        <td><input type="file" name="file[]"></td>
-        <td>Delete</td>
+        <td><input type="file" class="form-control" name="file[]"></td>
+        <td><button type="button" class="btn btn-danger" id="delRow">Delete</button></td>
         `;
         tbody.appendChild(tr);
+
     })
 </script>

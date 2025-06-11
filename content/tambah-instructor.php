@@ -13,6 +13,7 @@ if (isset($_GET['delete'])) {
 if (!isset($_GET['edit'])) {
     $ht = "Add";
     if (isset($_POST['name'])) {
+        $id_role = 2;
         $name = $_POST['name'];
         $gender = $_POST['gender'];
         $education = $_POST['education'];
@@ -21,7 +22,7 @@ if (!isset($_GET['edit'])) {
         $password = sha1($_POST['password']);
         $address = $_POST['address'];
         $id_user = isset($_GET['edit']) ? $_GET['edit'] : '';
-        $insert = mysqli_query($config,"INSERT INTO instructors (name, gender, education, phone, email, password, address) VALUES ('$name', '$gender', '$education', '$phone', '$email', '$password', '$address')");
+        $insert = mysqli_query($config,"INSERT INTO instructors (id_role, name, gender, education, phone, email, password, address) VALUES ('$id_role', '$name', '$gender', '$education', '$phone', '$email', '$password', '$address')");
         header("location:?page=instructor&tambah=berhasil");
     } 
     
@@ -30,6 +31,7 @@ if (!isset($_GET['edit'])) {
     $query = mysqli_query($config,"SELECT * FROM instructors WHERE id={$_GET['edit']}");
     $row = mysqli_fetch_assoc($query);
     if (isset($_POST['name'])) {
+        $id_role = 2;
         $name = $_POST['name'];
         $gender = $_POST['gender'];
         $education = $_POST['education'];
@@ -42,7 +44,7 @@ if (!isset($_GET['edit'])) {
         }
         $address = $_POST['address'];
         $id_user = isset($_GET['edit']) ? $_GET['edit'] : '';
-        $update = mysqli_query($config,"UPDATE instructors SET name='$name', gender='$gender', education='$education', phone='$phone', email='$email', password='$password', address='$address' WHERE id='$id_user'");
+        $update = mysqli_query($config,"UPDATE instructors SET id_role='$id_role', name='$name', gender='$gender', education='$education', phone='$phone', email='$email', password='$password', address='$address' WHERE id='$id_user'");
         header("location:?page=instructor&ubah=berhasil");
     } 
 }

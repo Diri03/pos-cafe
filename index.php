@@ -7,9 +7,9 @@
         $password = sha1($_POST['password']);
         $role = $_POST['role'];
 
-        if ($role == 1) {
+        if ($role == 2) {
           $queryLogin = mysqli_query($config,"SELECT * FROM instructors WHERE email='$email' AND password='$password'");
-        } elseif ($role == 2) {
+        } elseif ($role == 6) {
           $queryLogin = mysqli_query($config,"SELECT * FROM students WHERE email='$email' AND password='$password'");
         } else {
           $queryLogin = mysqli_query($config,"SELECT * FROM users WHERE email='$email' AND password='$password'");
@@ -26,6 +26,9 @@
             header('location:index.php?login=error');
         }
     }
+
+    $query = mysqli_query($config,"SELECT * FROM roles WHERE name IN ('PIC', 'Student', 'Instructor') ORDER BY id DESC");
+    $row = mysqli_fetch_all($query, MYSQLI_ASSOC);
 ?>
 
 <!-- assets/pages-login.html -->
@@ -116,9 +119,13 @@
                       <label for="yourRole" class="form-label">Role</label>
                       <select name="role" id="yourRole" class="form-control" required>
                         <option value="">Choose Role</option>
-                        <option value="1">Instructor</option>
+                        <?php foreach ($row as $key => $value) { ?>
+                          <option value="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option>
+                        <?php } ?>
+                        <option value="100">Other</option>
+                        <!-- <option value="1">Instructor</option>
                         <option value="2">Student</option>
-                        <option value="3">Other</option>
+                        <option value="3">Other</option> -->
                       </select>
                       <div class="invalid-feedback">Please select your role!</div>
                     </div>
