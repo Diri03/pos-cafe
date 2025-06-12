@@ -50,7 +50,7 @@
                                     <td><?php echo $data['instructor']; ?></td>
                                     <td><?php echo $data['major']; ?></td>
                                     <td>
-                                        <?php if ($id_role == 1) { ?>
+                                        <?php if (canAddModul($id_role)) { ?>
                                             <a href="?page=tambah-modul&edit=<?php echo $data['id']; ?>" class="btn btn-success">Edit</a>
                                             <a onclick="return confirm('Are you sure?')" href="?page=tambah-modul&delete=<?php echo $data['id'] ?>" class="btn btn-danger">Delete</a>
                                         <?php } ?>

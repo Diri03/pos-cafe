@@ -6,15 +6,15 @@
         $restore = $_GET['restore'];
         $qrestore = mysqli_query($config,"UPDATE users SET deleted_at = 0 WHERE id = $restore");
         if ($qrestore) {
-            header("location:?page=user");
+            header("location:?page=restore-user&backup=success");
         }
     }
 
     if (isset($_GET['delete'])) {
         $delete = $_GET['delete'];
         $qremove = mysqli_query($config,"DELETE FROM users WHERE id = $delete");
-        if ($qrestore) {
-            header("location:?page=user");
+        if ($qremove) {
+            header("location:?page=restore-user&remove=success");
         }
     }
 ?>
@@ -25,8 +25,7 @@
             <div class="card-body">
                 <h5 class="card-title">Data User</h5>
                 <div class="mb-3" align="right">
-                    <a href="?page=tambah-user" class="btn btn-primary">+</a>
-                    <a href="?page=restore-user" class="btn btn-primary">Restore</a>
+                    <a href="?page=user" class="btn btn-secondary">Back</a>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered">

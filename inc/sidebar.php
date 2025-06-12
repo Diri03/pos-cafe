@@ -1,5 +1,9 @@
 <?php
-  $queryMainMenu = mysqli_query($config, "SELECT * FROM menus WHERE parent_id = 0 OR parent_id = ''");
+  $id_role = $_SESSION['ID_ROLE'];
+  $queryMainMenu = mysqli_query($config, "SELECT DISTINCT m.* FROM menus m
+  LEFT JOIN menu_roles mr ON m.id = mr.id_menu
+  LEFT JOIN roles r ON r.id = mr.id_role
+  WHERE mr.id_role = '$id_role' AND parent_id = 0 OR parent_id = '' ORDER BY urutan");
   $rowMainMenu = mysqli_fetch_all($queryMainMenu, MYSQLI_ASSOC);
 ?>
 
@@ -10,7 +14,10 @@
       <?php foreach ($rowMainMenu as $mainMenu): ?>
         <?php
           $id_menu = $mainMenu["id"];
-          $querySubMenu = mysqli_query($config, "SELECT * FROM menus WHERE parent_id = '$id_menu' ORDER BY urutan");
+          $querySubMenu = mysqli_query($config, "SELECT DISTINCT m.* FROM menus m
+          LEFT JOIN menu_roles mr ON m.id = mr.id_menu
+          LEFT JOIN roles r ON r.id = mr.id_role
+          WHERE mr.id_role = '$id_role' AND parent_id = '$id_menu' ORDER BY urutan");
         ?>
         <?php if (mysqli_num_rows($querySubMenu) > 0): ?>   
           <li class="nav-item">
