@@ -3,7 +3,8 @@
   $queryMainMenu = mysqli_query($config, "SELECT DISTINCT m.* FROM menus m
   LEFT JOIN menu_roles mr ON m.id = mr.id_menu
   LEFT JOIN roles r ON r.id = mr.id_role
-  WHERE mr.id_role = '$id_role' AND parent_id = 0 OR parent_id = '' ORDER BY urutan");
+  WHERE mr.id_role = '$id_role' 
+  AND parent_id = 0 OR parent_id = '' ORDER BY urutan");
   $rowMainMenu = mysqli_fetch_all($queryMainMenu, MYSQLI_ASSOC);
 ?>
 

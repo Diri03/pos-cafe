@@ -185,9 +185,19 @@ if (isset($_GET['download'])) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
         <td><input type="file" class="form-control" name="file[]"></td>
-        <td><button type="button" class="btn btn-danger" id="delRow">Delete</button></td>
+        <td><button type="button" class="btn btn-danger delRow">Delete</button></td>
         `;
         tbody.appendChild(tr);
 
-    })
+    });
+
+    // Delegasi event ke tbody
+    tbody.addEventListener('click', function(e) {
+        if (e.target && e.target.classList.contains('delRow')) {
+            const tr = e.target.closest('tr');
+            if (tr) {
+                tr.remove(); // Hapus baris
+            }
+        }
+    });
 </script>
