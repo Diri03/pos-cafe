@@ -5,7 +5,7 @@
     session_start();
     ob_start();
 
-    if (empty($_SESSION['NAME'])) {
+        if (empty($_SESSION['NAME'])) {
       header("location:index.php?access=failed");
     }
 ?>
@@ -18,7 +18,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>LMS | PPKD Jakarta Pusat</title>
+  <title>POS | PPKD Jakarta Pusat</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 

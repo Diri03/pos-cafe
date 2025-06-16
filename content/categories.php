@@ -1,33 +1,33 @@
 <?php
-    $queryMajors = mysqli_query($config,"SELECT * FROM majors ORDER BY id DESC");
-    $rowMajors = mysqli_fetch_all($queryMajors, MYSQLI_ASSOC);
+    $queryCategory = mysqli_query($config,"SELECT * FROM categories ORDER BY id DESC");
+    $rowCategory = mysqli_fetch_all($queryCategory, MYSQLI_ASSOC);
 ?>
 
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Data Major</h5>
+                <h5 class="card-title">Data Category</h5>
                 <div class="mb-3" align="right">
-                    <a href="?page=tambah-major" class="btn btn-primary">+</a>
+                    <a href="?page=tambah-category" class="btn btn-primary">+</a>
                 </div>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Major</th>
+                                <th>Name</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($rowMajors as $key => $data) { ?>   
+                            <?php foreach ($rowCategory as $key => $data) { ?>   
                                 <tr>
                                     <td><?php echo $key + 1; ?></td>
                                     <td><?php echo $data['name']; ?></td>
                                     <td>
-                                        <a href="?page=tambah-major&edit=<?php echo $data['id']; ?>" class="btn btn-success">Edit</a>
-                                        <a onclick="return confirm('Are you sure?')" href="?page=tambah-major&delete=<?php echo $data['id'] ?>" class="btn btn-danger">Delete</a>
+                                        <a href="?page=tambah-category&edit=<?php echo $data['id']; ?>" class="btn btn-success">Edit</a>
+                                        <a onclick="return confirm('Are you sure?')" href="?page=tambah-category&delete=<?php echo $data['id'] ?>" class="btn btn-danger">Delete</a>
                                     </td>
                                 </tr>
                             <?php } ?>

@@ -5,21 +5,13 @@
     if (isset($_POST['email'])) {
         $email = $_POST['email'];
         $password = sha1($_POST['password']);
-        $role = $_POST['role'];
 
-        if ($role == 2) {
-          $queryLogin = mysqli_query($config,"SELECT * FROM instructors WHERE email='$email' AND password='$password'");
-        } elseif ($role == 6) {
-          $queryLogin = mysqli_query($config,"SELECT * FROM students WHERE email='$email' AND password='$password'");
-        } else {
-          $queryLogin = mysqli_query($config,"SELECT * FROM users WHERE email='$email' AND password='$password'");
-        }
+        $queryLogin = mysqli_query($config,"SELECT * FROM users WHERE email='$email' AND password='$password'");
 
         if (mysqli_num_rows($queryLogin) > 0) {
             $rowLogin = mysqli_fetch_assoc($queryLogin);
             $_SESSION['ID_USER'] = $rowLogin['id'];
             $_SESSION['NAME'] = $rowLogin['name'];
-            $_SESSION['ID_ROLE'] = $role;
 
             header('location:home.php');
         } else {
@@ -27,8 +19,6 @@
         }
     }
 
-    $query = mysqli_query($config,"SELECT * FROM roles WHERE name IN ('PIC', 'Student', 'Instructor') ORDER BY id DESC");
-    $row = mysqli_fetch_all($query, MYSQLI_ASSOC);
 ?>
 
 <!-- assets/pages-login.html -->
@@ -39,7 +29,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>LMS | PPKD Jakarta Pusat</title>
+  <title>Point Of Sales | PPKD Jakarta Pusat</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -85,7 +75,7 @@
               <div class="d-flex justify-content-center py-4">
                 <a href="index.html" class="logo d-flex align-items-center w-auto">
                   <img src="assets/img/logo.png" alt="">
-                  <span class="d-none d-lg-block">LMS PPKD JakPus</span>
+                  <span class="d-none d-lg-block">POS PPKD JakPus</span>
                 </a>
               </div><!-- End Logo -->
 
@@ -113,21 +103,6 @@
                       <label for="yourPassword" class="form-label">Password</label>
                       <input type="password" name="password" class="form-control" id="yourPassword" required>
                       <div class="invalid-feedback">Please enter your password!</div>
-                    </div>
-
-                    <div class="col-12">
-                      <label for="yourRole" class="form-label">Role</label>
-                      <select name="role" id="yourRole" class="form-control" required>
-                        <option value="">Choose Role</option>
-                        <?php foreach ($row as $key => $value) { ?>
-                          <option value="<?php echo $value['id']; ?>"><?php echo $value['name']; ?></option>
-                        <?php } ?>
-                        <option value="100">Other</option>
-                        <!-- <option value="1">Instructor</option>
-                        <option value="2">Student</option>
-                        <option value="3">Other</option> -->
-                      </select>
-                      <div class="invalid-feedback">Please select your role!</div>
                     </div>
 
                     <div class="col-12">
