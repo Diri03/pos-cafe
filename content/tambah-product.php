@@ -1,5 +1,8 @@
 <?php
 
+$queryC =mysqli_query($config, "SELECT * FROM categories ORDER BY id DESC");
+$rowC = mysqli_fetch_all( $queryC, MYSQLI_ASSOC);
+
 if (isset($_GET['delete'])) {  
     $id_user = $_GET['delete'];
     $queryDelete = mysqli_query($config,"DELETE FROM products WHERE id = '$id_user'");
@@ -14,14 +17,12 @@ if (!isset($_GET['edit'])) {
     $ht = "Add";
     if (isset($_POST['name'])) {
         $name = $_POST['name'];
-        $gender = $_POST['gender'];
-        $education = $_POST['education'];
-        $phone = $_POST['phone'];
-        $email = $_POST['email'];
-        $password = sha1($_POST['password']);
-        $address = $_POST['address'];
+        $id_category = $_POST['id_category'];
+        $price = $_POST['price'];
+        $qty = $_POST['qty'];
+        $description = $_POST['description'];
         $id_user = isset($_GET['edit']) ? $_GET['edit'] : '';
-        $insert = mysqli_query($config,"INSERT INTO products (id_role, name, gender, education, phone, email, password, address) VALUES ('$id_role', '$name', '$gender', '$education', '$phone', '$email', '$password', '$address')");
+        $insert = mysqli_query($config,"INSERT INTO products (id_category, name, price, qty, description) VALUES ('$id_category', '$name', '$price', '$qty', '$description')");
         header("location:?page=products&tambah=berhasil");
     } 
     
@@ -31,18 +32,12 @@ if (!isset($_GET['edit'])) {
     $row = mysqli_fetch_assoc($query);
     if (isset($_POST['name'])) {
         $name = $_POST['name'];
-        $gender = $_POST['gender'];
-        $education = $_POST['education'];
-        $phone = $_POST['phone'];
-        $email = $_POST['email'];
-        if (empty($_POST['password'])) {
-            $password = $row['password'];
-        } else {
-            $password = sha1($_POST['password']);
-        }
-        $address = $_POST['address'];
+        $id_category = $_POST['id_category'];
+        $price = $_POST['price'];
+        $qty = $_POST['qty'];
+        $description = $_POST['description'];
         $id_user = isset($_GET['edit']) ? $_GET['edit'] : '';
-        $update = mysqli_query($config,"UPDATE products SET id_role='$id_role', name='$name', gender='$gender', education='$education', phone='$phone', email='$email', password='$password', address='$address' WHERE id='$id_user'");
+        $update = mysqli_query($config,"UPDATE products SET id_category='$id_category', name='$name', price='$price', qty='$qty', description='$description' WHERE id='$id_user'");
         header("location:?page=products&ubah=berhasil");
     } 
 }
@@ -63,34 +58,23 @@ if (!isset($_GET['edit'])) {
                     <div class="mb-3">
                         <label for="" class="form-label"> Category Product <span class="text-danger">*</span></label>
                         <select required name="id_category" id="" class="form-control" required>
-                            <option value="">-- Choose gender --</option>
-                            <option <?php echo isset($_GET['edit']) ? ($row['gender'] == 0) ? 'selected' : '' : '' ?> value="0">Male</option>
-                            <option <?php echo isset($_GET['edit']) ? ($row['gender'] == 1) ? 'selected' : '' : '' ?> value="1">Female</option>                 
+                            <option value="">-- Choose category --</option>
+                            <?php foreach ($rowC as $key => $data) { ?>
+                                <option <?php echo isset($_GET['edit']) ? ($row['id_category'] == $data['id'] ? 'selected' : '') : '' ?> value="<?php echo $data['id']; ?>"><?php echo $data['name']; ?></option>
+                            <?php } ?>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="" class="form-label"> Education <span class="text-danger">*</span></label>
-                        <input required type="text" name="education" placeholder="Enter your education" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['education'] : ''; ?>">
+                        <label for="" class="form-label"> Price <span class="text-danger">*</span></label>
+                        <input required type="number" name="price" placeholder="Enter your price" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['price'] : ''; ?>">
                     </div>
                     <div class="mb-3">
-                        <label for="" class="form-label"> Phone <span class="text-danger">*</span></label>
-                        <input required type="text" name="phone" placeholder="Enter your phone" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['phone'] : ''; ?>">
+                        <label for="" class="form-label"> Qty <span class="text-danger">*</span></label>
+                        <input required type="number" name="qty" placeholder="Enter your quantity" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['qty'] : ''; ?>">
                     </div>
                     <div class="mb-3">
-                        <label for="" class="form-label"> Email <span class="text-danger">*</span></label>
-                        <input required type="email" name="email" placeholder="Enter your email" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['email'] : ''; ?>">
-                    </div>
-                    <div class="mb-3">
-                        <label for="" class="form-label"> Password <span class="text-danger"><?php echo isset($_GET['edit']) ? '' : '*'; ?></span></label>
-                        <input <?php echo isset($_GET['edit']) ? '' : 'selected'; ?> type="password" name="password" placeholder="Enter your password" class="form-control">
-                        <?php echo isset( $_GET['edit']) ? 
-                        "<small>
-                            )* If you want to change your password, you can fill this field
-                        </small>" : ''; ?>
-                    </div>
-                    <div class="mb-3">
-                        <label for="" class="form-label"> Address <span class="text-danger">*</span></label>
-                        <textarea name="address" id="" cols="30" rows="10" class="form-control"><?php echo isset($_GET['edit']) ? $row['address'] : ''; ?></textarea>
+                        <label for="" class="form-label"> Description <span class="text-danger">*</span></label>
+                        <textarea name="description" id="" cols="30" rows="10" class="form-control"><?php echo isset($_GET['edit']) ? $row['description'] : ''; ?></textarea>
                     </div>
                     <div class="mb-3">
                         <button type="submit" name="save" class="btn btn-success"><?php echo $ht; ?></button>
