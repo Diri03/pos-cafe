@@ -1,9 +1,9 @@
 <?php
-  $id_role = $_SESSION['ID_ROLE'];
+  $id_user = $_SESSION['ID_USER'];
   $queryMainMenu = mysqli_query($config, "SELECT DISTINCT m.* FROM menus m
-  LEFT JOIN menu_roles mr ON m.id = mr.id_menu
-  LEFT JOIN roles r ON r.id = mr.id_role
-  WHERE mr.id_role = '$id_role' 
+  JOIN menu_roles mr ON m.id = mr.id_menu
+  JOIN user_roles ur ON ur.id_role = mr.id_role
+  WHERE ur.id_user = '$id_user' 
   AND parent_id = 0 OR parent_id = '' ORDER BY urutan");
   $rowMainMenu = mysqli_fetch_all($queryMainMenu, MYSQLI_ASSOC);
 ?>
@@ -16,9 +16,9 @@
         <?php
           $id_menu = $mainMenu["id"];
           $querySubMenu = mysqli_query($config, "SELECT DISTINCT m.* FROM menus m
-          LEFT JOIN menu_roles mr ON m.id = mr.id_menu
-          LEFT JOIN roles r ON r.id = mr.id_role
-          WHERE mr.id_role = '$id_role' AND parent_id = '$id_menu' ORDER BY urutan");
+          JOIN menu_roles mr ON m.id = mr.id_menu
+          JOIN user_roles ur ON ur.id_role = mr.id_role
+          WHERE ur.id_user = '$id_user' AND parent_id = '$id_menu' ORDER BY urutan");
         ?>
         <?php if (mysqli_num_rows($querySubMenu) > 0): ?>   
           <li class="nav-item">
@@ -35,7 +35,7 @@
               <?php endwhile ?>
             </ul>
           </li><!-- End Components Nav -->
-          <li class="nav-heading">Transaction</li>
+          <!-- <li class="nav-heading">Transaction</li> -->
         <?php elseif (!empty($mainMenu['url'])):  ?>
           <?php $url = $mainMenu['url'];?>
 

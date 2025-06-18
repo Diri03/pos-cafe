@@ -1,8 +1,5 @@
 <?php
 
-$queryRole = mysqli_query($config, "SELECT * FROM roles ORDER BY id DESC");
-$rowRoles = mysqli_fetch_all($queryRole, MYSQLI_ASSOC);
-
 $id_user = isset($_GET['add-user-role']) ? $_GET['add-user-role'] : '';
 $queryUserRole = mysqli_query($config, "SELECT roles.name as name_role, users.name as name_user, user_roles.* FROM user_roles
 LEFT JOIN roles ON user_roles.id_role = roles.id
@@ -59,6 +56,20 @@ if (isset($_POST['simpan'])) {
     header("location:?page=tambah-user&add-user-role=" . $id_user . "&done");
 }
 
+$queryProducts = mysqli_query($config, "SELECT * FROM products ORDER BY id DESC");
+$rowProducts = mysqli_fetch_all($queryProducts, MYSQLI_ASSOC);
+
+$queryNoTrans = mysqli_query($config,"SELECT MAX(id) AS id_trans FROM transactions");
+$rowNoTrans = mysqli_fetch_assoc($queryNoTrans);
+$id_trans = $rowNoTrans["id_trans"];
+$id_trans++;
+
+$format_no = "TR";
+$date = date('dym');
+$increment_number = sprintf("%03s", $id_trans);
+$no_transaction = $format_no . "-" . $date . "-" . $increment_number;
+// $no_transaction = $format_no . "-" . $date . "-" . str_pad("0", $id_trans, STR_PAD_LEFT);
+
 ?>
 
 <div class="row">
@@ -108,24 +119,51 @@ if (isset($_POST['simpan'])) {
                     </div>
                 <?php } else { ?>
                     <form action="" method="post">
-                        <div class="mb-3">
-                            <label for="" class="form-label"> Fullname <span class="text-danger">*</span></label>
-                            <input required type="text" name="name" placeholder="Enter your name" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['name'] : ''; ?>">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="mb-3">
+                                    <label for="" class="form-label"> No Transaction <span class="text-danger">*</span></label>
+                                    <input readonly type="text" name="no_transaction" class="form-control" value="<?php echo $no_transaction; ?>">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="" class="form-label"> Product <span class="text-danger">*</span></label>
+                                    <select name="id_product" id="" class="form-control">
+                                        <option value="">Select One</option>
+                                        <?php foreach ($rowProducts as $key => $data) { ?>
+                                            <option value="<?php echo $data['id']; ?>"><?php echo $data['name']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="mb-3">
+                                    <label for="" class="form-label"> Chasier <span class="text-danger">*</span></label>
+                                    <input readonly type="text" class="form-control" value="<?php echo $_SESSION['NAME']; ?>">
+                                    <input type="hidden" name="id_user" value="<?php echo $_SESSION['ID_USER']; ?>">
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="" class="form-label"> Email <span class="text-danger">*</span></label>
-                            <input required type="email" name="email" placeholder="Enter your email" class="form-control" value="<?php echo isset($_GET['edit']) ? $row['email'] : ''; ?>">
+
+                        <div class="mb-3" align="right">
+                            <button type="button" class="btn btn-primary addRow" id="addRow">Add Row</button>
                         </div>
+                        <table class="table" id="myTable">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Product Name</th>
+                                    <th>Qty</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                            </tbody>
+                        </table>
+                        
                         <div class="mb-3">
-                            <label for="" class="form-label"> Password <span class="text-danger"><?php echo isset($_GET['edit']) ? '' : '*'; ?></span></label>
-                            <input <?php echo isset($_GET['edit']) ? '' : 'selected'; ?> type="password" name="password" placeholder="Enter your password" class="form-control">
-                            <?php echo isset( $_GET['edit']) ? 
-                            "<small>
-                                )* If you want to change your password, you can fill this field
-                            </small>" : ''; ?>
-                        </div>
-                        <div class="mb-3">
-                            <button type="submit" name="save" class="btn btn-success"><?php echo $ht; ?></button>
+                            <button type="submit" name="save" class="btn btn-success">Save</button>
                         </div>
                     </form>
                 <?php } ?>
@@ -162,3 +200,43 @@ if (isset($_POST['simpan'])) {
         </div>
     </div>
 </div>
+
+<script>
+    const button = document.querySelector('#addRow');
+    const tbody = document.querySelector('#myTable tbody');
+
+    let no = 1;
+    button.addEventListener("click", function(){
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+        <td>${no}</td>
+        <td><input type="hidden" class="form-control" name="id_product[]"></td>
+        <td><input type="number" class="form-control" name="qty[] value='0'"></td>
+        <td><input type="hidden" class="form-control" name="total[]"></td>
+        <td><button type="button" class="btn btn-danger delRow">Delete</button></td>
+        `;
+
+        tbody.appendChild(tr);
+        no++;
+
+    });
+
+    // Delegasi event ke tbody
+    tbody.addEventListener('click', function(e) {
+        if (e.target.classList.contains('delRow')) {
+            e.target.closest('tr').remove();
+        }
+
+        updateNumber();
+    });
+
+    function updateNumber() {
+        const rows = tbody.querySelectorAll("tr");
+        rows.forEach(function(row, index){
+            row.cells[0].textContent = index + 1;
+        });
+
+        no = rows.length + 1;
+    }
+</script>
