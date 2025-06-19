@@ -15,7 +15,7 @@ $rowUserRoles = mysqli_fetch_all($queryUserRole, MYSQLI_ASSOC);
 
 if (isset($_GET['delete'])) {  
     $id_user = $_GET['delete'];
-    $queryDelete = mysqli_query($config,"UPDATE users SET deleted_at = 1 WHERE id = '$id_user'");
+    $queryDelete = mysqli_query($config,"DELETE FROM users WHERE id = '$id_user'");
     if ($queryDelete) {
         header('location:?page=user&hapus=berhasil');
     } else {

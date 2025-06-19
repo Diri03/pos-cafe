@@ -10,16 +10,6 @@ $rowUserRoles = mysqli_fetch_all($queryUserRole, MYSQLI_ASSOC);
 
 // print_r($rowUserRoles); die;
 
-if (isset($_GET['delete'])) {  
-    $id_user = $_GET['delete'];
-    $queryDelete = mysqli_query($config,"UPDATE users SET deleted_at = 1 WHERE id = '$id_user'");
-    if ($queryDelete) {
-        header('location:?page=user&hapus=berhasil');
-    } else {
-        header('location:?page=user&hapus=gagal');
-    }
-}
-
 if (!isset($_GET['edit'])) {
     $ht = "Add";
     if (isset($_POST['name'])) {
@@ -69,6 +59,28 @@ $date = date('dym');
 $increment_number = sprintf("%03s", $id_trans);
 $no_transaction = $format_no . "-" . $date . "-" . $increment_number;
 // $no_transaction = $format_no . "-" . $date . "-" . str_pad("0", $id_trans, STR_PAD_LEFT);
+
+if (isset($_POST['save'])) {
+    $no_transaction = $_POST['no_transaction'];
+    $id_user = $_POST['id_user'];
+    $sub_total = $_POST['grand_total'];
+
+    $insTransaction = mysqli_query($config,"INSERT INTO transactions (`id_user`, `no_transaction`, `sub_total`) VALUES ('$id_user', '$no_transaction', '$sub_total')");
+    if ($insTransaction) {
+        $id_transaction = mysqli_insert_id($config);
+        $id_products = $_POST['id_product'];
+        $qtys = $_POST['qty'];
+        $totals = $_POST['total'];
+        foreach ($id_products as $key => $id_product) {
+            $id_product = $id_products[$key];
+            $qty = $qtys[$key];
+            $total = $totals[$key];
+
+            $insTransacDetail = mysqli_query($config, "INSERT INTO transaction_details (id_transaction, id_product, qty, total) VALUES ('$id_transaction', '$id_product', '$qty', '$total')");
+        }
+        header("location:?page=pos");
+    }
+}
 
 ?>
 
@@ -127,10 +139,10 @@ $no_transaction = $format_no . "-" . $date . "-" . $increment_number;
                                 </div>
                                 <div class="mb-3">
                                     <label for="" class="form-label"> Product <span class="text-danger">*</span></label>
-                                    <select name="id_product" id="" class="form-control">
+                                    <select name="id_product" id="id_product" class="form-control">
                                         <option value="">Select One</option>
                                         <?php foreach ($rowProducts as $key => $data) { ?>
-                                            <option value="<?php echo $data['id']; ?>"><?php echo $data['name']; ?></option>
+                                            <option data-price="<?php echo $data['price']; ?>" value="<?php echo $data['id']; ?>"><?php echo $data['name']; ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
@@ -161,7 +173,9 @@ $no_transaction = $format_no . "-" . $date . "-" . $increment_number;
                                 
                             </tbody>
                         </table>
-                        
+                        <br>
+                        <p><strong>Grand Total: Rp. <span id="grandTotalText"></span></strong></p>
+                        <input type="hidden" name="grand_total" id="grandTotalInput" value="0">
                         <div class="mb-3">
                             <button type="submit" name="save" class="btn btn-success">Save</button>
                         </div>
@@ -204,31 +218,63 @@ $no_transaction = $format_no . "-" . $date . "-" . $increment_number;
 <script>
     const button = document.querySelector('#addRow');
     const tbody = document.querySelector('#myTable tbody');
+    const select = document.querySelector('#id_product');
+    const grandTotal = document.querySelector('#grandTotal');
+    const grandTotalInput = document.querySelector('#grandTotalInput');
 
     let no = 1;
     button.addEventListener("click", function(){
 
+        const selectedProduct = select.options[select.selectedIndex];
+        const productValue = selectedProduct.value;
+        if (!productValue) {
+            alert("Please Select Product")
+            return;
+        }
+        const productName = selectedProduct.textContent;
+        const productPrice = selectedProduct.dataset.price;
+
         const tr = document.createElement('tr');
         tr.innerHTML = `
         <td>${no}</td>
-        <td><input type="hidden" class="form-control" name="id_product[]"></td>
-        <td><input type="number" class="form-control" name="qty[] value='0'"></td>
-        <td><input type="hidden" class="form-control" name="total[]"></td>
+        <td><input type="hidden" class="form-control id_products" name="id_product[]" value="${select.value}">${productName}</td>
+        <td>
+            <input type="number" class="form-control qtys" name="qty[]" value='1'>
+            <input type="hidden" class="priceInput" name="price[]" value='${productPrice}'>
+        </td>
+        <td><input type="hidden" class="form-control totals" name="total[]" value='${productPrice}'><span class="totalText">${productPrice}</span></td>
         <td><button type="button" class="btn btn-danger delRow">Delete</button></td>
         `;
 
         tbody.appendChild(tr);
         no++;
 
+        updateGrandTotal();
+
+        select.value = "";
+
     });
 
-    // Delegasi event ke tbody
     tbody.addEventListener('click', function(e) {
         if (e.target.classList.contains('delRow')) {
             e.target.closest('tr').remove();
         }
 
         updateNumber();
+        updateGrandTotal();
+    });
+
+    tbody.addEventListener('input', function(e){
+        if (e.target.classList.contains('qtys')) {
+            const row = e.target.closest("tr");
+            const qty = parseInt(e.target.value) || 0;
+            const price = parseInt(row.querySelector('[name="price[]"]').value);
+
+            row.querySelector('.totalText').textContent = price * qty;
+            row.querySelector('.totals').value = price * qty;
+            updateGrandTotal();
+
+        }
     });
 
     function updateNumber() {
@@ -239,4 +285,15 @@ $no_transaction = $format_no . "-" . $date . "-" . $increment_number;
 
         no = rows.length + 1;
     }
+
+    function updateGrandTotal() {
+        const totalCells = tbody.querySelectorAll('.totals');
+        let grand = 0;
+        totalCells.forEach(function(input){
+            grand += parseInt(input.value) || 0;
+        });
+        grandTotalText.textContent = grand.toLocaleString('id-ID');
+        grandTotalInput.value = grand;
+    }
+
 </script>

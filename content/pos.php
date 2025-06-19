@@ -1,6 +1,16 @@
 <?php
     $queryTransactions = mysqli_query($config,"SELECT transactions.*, users.name FROM transactions LEFT JOIN users ON transactions.id_user = users.id ORDER BY id DESC");
     $rowTransactions = mysqli_fetch_all($queryTransactions, MYSQLI_ASSOC);
+
+    if (isset($_GET['delete'])) {  
+    $id_user = $_GET['delete'];
+    $queryDelete = mysqli_query($config,"DELETE FROM transactions WHERE id = '$id_user'");
+    if ($queryDelete) {
+        header('location:?page=pos&hapus=berhasil');
+    } else {
+        header('location:?page=pos&hapus=gagal');
+    }
+}
 ?>
 
 <div class="row">
@@ -26,12 +36,12 @@
                             <?php foreach ($rowTransactions as $key => $data) { ?>   
                                 <tr>
                                     <td><?php echo $key + 1; ?></td>
-                                    <td><?php echo $key['no_transaction']; ?></td>
+                                    <td><?php echo $data['no_transaction']; ?></td>
                                     <td><?php echo $data['name']; ?></td>
                                     <td><?php echo "Rp. " . $data['sub_total']; ?></td>
                                     <td>
-                                        <a href="?page=tambah-pos&print=<?php echo $data['id']; ?>" class="btn btn-success">Print</a>
-                                        <a onclick="return confirm('Are you sure?')" href="?page=tambah-pos&delete=<?php echo $data['id'] ?>" class="btn btn-danger">Delete</a>
+                                        <a href="?page=print-pos&print=<?php echo $data['id']; ?>" class="btn btn-success">Print</a>
+                                        <a onclick="return confirm('Are you sure?')" href="?page=pos&delete=<?php echo $data['id'] ?>" class="btn btn-danger">Delete</a>
                                     </td>
                                 </tr>
                             <?php } ?>
